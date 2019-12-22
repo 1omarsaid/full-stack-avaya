@@ -1,6 +1,8 @@
 // /client/App.js
 import React, { Component } from 'react';
 import axios from 'axios';
+import * as data from "./actions/dataActions"
+import { connect } from "react-redux"
 
 class App extends Component {
   // initialize our state
@@ -13,6 +15,8 @@ class App extends Component {
     idToUpdate: null,
     objectToUpdate: null,
   };
+
+  
 
   // when component mounts, first thing it does is fetch all existing data in our db
   // then we incorporate a polling logic so that we can easily see if our db has
@@ -45,6 +49,7 @@ class App extends Component {
     fetch('http://localhost:3001/api/getData')
       .then((data) => data.json())
       .then((res) => this.setState({ data: res.data }));
+    // data.fetchData();
   };
 
   // our put method that uses our backend api
@@ -55,7 +60,8 @@ class App extends Component {
     while (currentIds.includes(idToBeAdded)) {
       ++idToBeAdded;
     }
-
+    //This part will be in the actions, we will simply 
+    //add idToBeAdded and message as a parameter
     axios.post('http://localhost:3001/api/putData', {
       id: idToBeAdded,
       message: message,
@@ -73,6 +79,8 @@ class App extends Component {
       }
     });
 
+    //This part will be in the actions, we will simply 
+    //add objIdToDelete as a parameter
     axios.delete('http://localhost:3001/api/deleteData', {
       data: {
         id: objIdToDelete,
@@ -91,11 +99,16 @@ class App extends Component {
       }
     });
 
+    //This part will be in the actions, we will simply 
+    //add objIdToUpdate and updateToApply as a parameter
+
+  
     axios.post('http://localhost:3001/api/updateData', {
       id: objIdToUpdate,
       update: { message: updateToApply },
     });
   };
+
 
   // here is our UI
   // it is easy to understand their functions when you
@@ -163,4 +176,12 @@ class App extends Component {
   }
 }
 
+const mapStateToProps = function(state){
+  return {
+    data: state.data,
+    
+  }
+}
+
 export default App;
+// export default connect(mapStateToProps)(App);
